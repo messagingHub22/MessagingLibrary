@@ -4,8 +4,8 @@ namespace MessagingLibrary
 {
     public class MessagingAPI
     {
-        // TODO: Replace with environment variable for server url. Temperarily testing with localhost
-        private static string ApiUrl = "https://localhost:7047";
+
+        private static string ApiUrl = Environment.GetEnvironmentVariable("SERVER_API_URL");
 
         public static string GetMessages()
         {
@@ -18,7 +18,8 @@ namespace MessagingLibrary
                 {
                     json = wc.DownloadString(CallUrl);
                 }
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 return "Error";
             }
