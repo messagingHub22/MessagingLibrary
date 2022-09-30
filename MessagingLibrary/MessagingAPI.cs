@@ -10,13 +10,13 @@ namespace MessagingLibrary
         public static string GetMessages()
         {
             string CallUrl = ApiUrl + "/api/getMessages";
-            string json;
+            string Json;
 
             try
             {
                 using (WebClient wc = new WebClient())
                 {
-                    json = wc.DownloadString(CallUrl);
+                    Json = wc.DownloadString(CallUrl);
                 }
             }
             catch (Exception e)
@@ -24,7 +24,26 @@ namespace MessagingLibrary
                 return "Error";
             }
 
-            return json;
+            return Json;
+        }
+
+        public static void SendMessage(String SentTime, String Content, String MessageCategory, String MessageUser)
+        {
+            string CallUrl = ApiUrl + "/api/sendMessage";
+            string Parameters = "SentTime=" + SentTime + "&Content=" + Content + "&MessageCategory=" + MessageCategory + "&MessageUser=" + MessageUser;
+
+            try
+            {   
+                using (WebClient wc = new WebClient())
+                {
+                    wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
+                    string HtmlResult = wc.UploadString(CallUrl, Parameters);
+                }
+            }
+            catch (Exception e)
+            {
+                // Error
+            }
         }
     }
 }
