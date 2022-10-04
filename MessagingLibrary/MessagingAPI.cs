@@ -27,23 +27,25 @@ namespace MessagingLibrary
             return Json;
         }
 
-        public static void SendMessage(String SentTime, String Content, String MessageCategory, String MessageUser)
+        public static async Task<string> SendMessage(String SentTime, String Content, String MessageCategory, String MessageUser)
         {
             string CallUrl = ApiUrl + "/api/sendMessage";
-            string Parameters = "SentTime=" + SentTime + "&Content=" + Content + "&MessageCategory=" + MessageCategory + "&MessageUser=" + MessageUser;
+            string Parameters = "?SentTime=" + SentTime + "&Content=" + Content + "&MessageCategory=" + MessageCategory + "&MessageUser=" + MessageUser;
 
+            string? responseString;
             try
-            {   
-                using (WebClient wc = new WebClient())
-                {
-                    wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
-                    string HtmlResult = wc.UploadString(CallUrl, Parameters);
-                }
+            {
+                HttpClient client = new HttpClient();
+
+                var response = await client.PostAsync(CallUrl + Parameters, null);
+                responseString = await response.Content.ReadAsStringAsync();
             }
             catch (Exception e)
             {
-                // Error
+                responseString = "Error";
             }
+
+            return responseString;
         }
     }
 }
