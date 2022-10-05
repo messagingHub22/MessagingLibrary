@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using MessagingLibrary.Data;
+using Newtonsoft.Json;
+using System.Net;
 
 namespace MessagingLibrary
 {
@@ -8,24 +10,30 @@ namespace MessagingLibrary
         private static string ApiUrl = Environment.GetEnvironmentVariable("SERVER_API_URL");
 
         // Get all the messages sent to all users from server
-        public static string GetMessages()
+        public static List<MessageData> GetMessages()
         {
             string CallUrl = ApiUrl + "/api/getMessages";
             string Json;
-
+            
             try
             {
                 using (WebClient wc = new WebClient())
                 {
                     Json = wc.DownloadString(CallUrl);
+
+                    var model = JsonConvert.DeserializeObject<List<MessageData>>(Json);
+
+                    if (model == null) {
+                        throw new Exception("Empty list"); // Returns new empty list
+                    }
+
+                    return model;
                 }
             }
             catch (Exception e)
             {
-                return "Error";
+                return new List<MessageData>();
             }
-
-            return Json;
         }
 
         // Send a message to a user from server
@@ -51,7 +59,7 @@ namespace MessagingLibrary
         }
 
         // Get the messages sent to a user from server
-        public static string GetMessagesForUser(String User)
+        public static List<MessageData> GetMessagesForUser(String User)
         {
             string CallUrl = ApiUrl + "/api/getMessagesForUser";
             string Parameters = "?User=" + User;
@@ -62,14 +70,21 @@ namespace MessagingLibrary
                 using (WebClient wc = new WebClient())
                 {
                     Json = wc.DownloadString(CallUrl + Parameters);
+
+                    var model = JsonConvert.DeserializeObject<List<MessageData>>(Json);
+
+                    if (model == null)
+                    {
+                        throw new Exception("Empty list"); // Returns new empty list
+                    }
+
+                    return model;
                 }
             }
             catch (Exception e)
             {
-                return "Error";
+                return new List<MessageData>();
             }
-
-            return Json;
         }
 
         // Mark the message with the given Id as read
