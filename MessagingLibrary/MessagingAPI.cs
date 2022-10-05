@@ -71,5 +71,27 @@ namespace MessagingLibrary
 
             return Json;
         }
+
+        // Mark the message with the given Id as read
+        public static async Task<string> MarkMessageRead(String Id)
+        {
+            string CallUrl = ApiUrl + "/api/markMessageRead";
+            string Parameters = "?Id=" + Id;
+
+            string? responseString;
+            try
+            {
+                HttpClient client = new HttpClient();
+
+                var response = await client.PostAsync(CallUrl + Parameters, null);
+                responseString = await response.Content.ReadAsStringAsync();
+            }
+            catch (Exception e)
+            {
+                responseString = "Error";
+            }
+
+            return responseString;
+        }
     }
 }
