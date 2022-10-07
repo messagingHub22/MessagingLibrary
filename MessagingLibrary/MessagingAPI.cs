@@ -10,25 +10,26 @@ namespace MessagingLibrary
         private static string ApiUrl = Environment.GetEnvironmentVariable("SERVER_API_URL");
 
         // Get all the messages sent to all users from server
-        public static List<MessageData> GetMessages()
+        public async static Task<List<MessageData>> GetMessages()
         {
             string CallUrl = ApiUrl + "/api/getMessages";
-            string Json;
-            
+
+            string? responseString;
             try
             {
-                using (WebClient wc = new WebClient())
+                HttpClient client = new HttpClient();
+
+                var response = await client.GetAsync(CallUrl);
+                responseString = await response.Content.ReadAsStringAsync();
+
+                var model = JsonConvert.DeserializeObject<List<MessageData>>(responseString);
+
+                if (model == null)
                 {
-                    Json = wc.DownloadString(CallUrl);
-
-                    var model = JsonConvert.DeserializeObject<List<MessageData>>(Json);
-
-                    if (model == null) {
-                        throw new Exception("Empty list"); // Returns new empty list
-                    }
-
-                    return model;
+                    throw new Exception("Empty list"); // Returns new empty list
                 }
+
+                return model;
             }
             catch (Exception e)
             {
@@ -59,27 +60,27 @@ namespace MessagingLibrary
         }
 
         // Get the messages sent to a user from server
-        public static List<MessageData> GetMessagesForUser(String User)
+        public async static Task<List<MessageData>> GetMessagesForUser(String User)
         {
             string CallUrl = ApiUrl + "/api/getMessagesForUser";
             string Parameters = "?User=" + User;
-            string Json;
 
+            string? responseString;
             try
             {
-                using (WebClient wc = new WebClient())
+                HttpClient client = new HttpClient();
+
+                var response = await client.GetAsync(CallUrl + Parameters);
+                responseString = await response.Content.ReadAsStringAsync();
+
+                var model = JsonConvert.DeserializeObject<List<MessageData>>(responseString);
+
+                if (model == null)
                 {
-                    Json = wc.DownloadString(CallUrl + Parameters);
-
-                    var model = JsonConvert.DeserializeObject<List<MessageData>>(Json);
-
-                    if (model == null)
-                    {
-                        throw new Exception("Empty list"); // Returns new empty list
-                    }
-
-                    return model;
+                    throw new Exception("Empty list"); // Returns new empty list
                 }
+
+                return model;
             }
             catch (Exception e)
             {
