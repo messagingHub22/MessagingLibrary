@@ -7,11 +7,8 @@ namespace MessagingLibrary
     public class HubLink
     {
 
-        // The user name logged in
-        private static string UserName = "";
-
-        // The last time messages was reloaded for this user after login
-        private static DateTime ReloadTime = DateTime.MinValue;
+        // Last updated times for every user
+        private static Dictionary<string, DateTime> ReloadTimes = new Dictionary<string, DateTime>();
 
         // The signalR hub connection
         private static HubConnection? connection;
@@ -20,7 +17,7 @@ namespace MessagingLibrary
         // Mark the message with the given Id as read
         public async static void LoginUser(String User)
         {
-            UserName = User;
+            ReloadTimes.Add(User, DateTime.MinValue);
 
             connection = new HubConnectionBuilder()
                 .WithUrl(new Uri(MessagingAPI.ApiUrl + "/messagingHub"))
@@ -29,10 +26,7 @@ namespace MessagingLibrary
 
             connection.On<string>("ReloadMessageClient", (userClient) =>
             {
-                if (UserName.Equals(userClient))
-                {
-                    ReloadTime = DateTime.Now;
-                }
+                ReloadTimes[userClient] = DateTime.Now;
             });
 
             try
@@ -57,9 +51,10 @@ namespace MessagingLibrary
             }
         }
 
-        public static string ChangedTime()
+        // The updated time for last message for this user
+        public static string ChangedTime(String User)
         {
-            return ReloadTime.ToString();
+            return ReloadTimes[User].ToString();
         }
     }
 }
