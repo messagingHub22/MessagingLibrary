@@ -1,4 +1,5 @@
 ﻿using MessagingLibrary.Data;
+using Microsoft.AspNetCore.SignalR.Client;
 using Newtonsoft.Json;
 using System.Net;
 
@@ -7,7 +8,8 @@ namespace MessagingLibrary
     public class MessagingAPI
     {
 
-        private static string ApiUrl = Environment.GetEnvironmentVariable("SERVER_API_URL");
+        // The URL for server
+        public static string ApiUrl = Environment.GetEnvironmentVariable("SERVER_API_URL");
 
         // Get all the messages sent to all users from server
         public async static Task<List<MessageData>> GetMessages()
@@ -55,6 +57,8 @@ namespace MessagingLibrary
             {
                 responseString = "Error";
             }
+
+            HubLink.SendReloadMessage(MessageUser);
 
             return responseString;
         }
