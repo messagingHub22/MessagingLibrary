@@ -192,5 +192,30 @@ namespace MessagingLibrary
                 return new List<string>();
             }
         }
+
+
+        // Send a message to a user from server
+        public static async Task<string> SendMessageToGroup(String SentTime, String Content, String MessageCategory, String MessageGroup)
+        {
+            string CallUrl = ApiUrl + "/api/sendMessageToGroup";
+            string Parameters = "?SentTime=" + SentTime + "&Content=" + Content + "&MessageCategory=" + MessageCategory + "&MessageGroup=" + MessageGroup;
+
+            string? responseString;
+            try
+            {
+                HttpClient client = new HttpClient();
+
+                var response = await client.PostAsync(CallUrl + Parameters, null);
+                responseString = await response.Content.ReadAsStringAsync();
+            }
+            catch (Exception e)
+            {
+                responseString = "Error";
+            }
+
+            HubLink.SendReloadMessage(MessageGroup);
+
+            return responseString;
+        }
     }
 }
