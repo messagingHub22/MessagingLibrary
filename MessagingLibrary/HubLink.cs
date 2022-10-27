@@ -15,9 +15,16 @@ namespace MessagingLibrary
 
 
         // Mark the message with the given Id as read
-        public async static void LoginUser(String User)
+        public static async void LoginUser(String User)
         {
-            ReloadTimes.Add(User, DateTime.MinValue);
+            if (ReloadTimes.ContainsKey(User))
+            {
+                ReloadTimes[User] = DateTime.Now;
+            }
+            else
+            {
+                ReloadTimes.Add(User, DateTime.MinValue);
+            }
 
             connection = new HubConnectionBuilder()
                 .WithUrl(new Uri(MessagingAPI.ApiUrl + "/messagingHub"))
@@ -40,7 +47,7 @@ namespace MessagingLibrary
         }
 
         // Send message to all connected signalR clients
-        public async static void SendReloadMessage(String User)
+        public static async void SendReloadMessage(String User)
         {
             try
             {

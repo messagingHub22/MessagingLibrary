@@ -12,7 +12,7 @@ namespace MessagingLibrary
         public static string ApiUrl = Environment.GetEnvironmentVariable("SERVER_API_URL");
 
         // Get all the messages sent to all users from server
-        public async static Task<List<MessageData>> GetMessages()
+        public static async Task<List<MessageData>> GetMessages()
         {
             string CallUrl = ApiUrl + "/api/getMessages";
 
@@ -64,7 +64,7 @@ namespace MessagingLibrary
         }
 
         // Get the messages sent to a user from server
-        public async static Task<List<MessageData>> GetMessagesForUser(String User)
+        public static async Task<List<MessageData>> GetMessagesForUser(String User)
         {
             string CallUrl = ApiUrl + "/api/getMessagesForUser";
             string Parameters = "?User=" + User;
@@ -115,7 +115,7 @@ namespace MessagingLibrary
         }
 
         // Get the groups
-        public async static Task<List<string>> GetGroups()
+        public static async Task<List<string>> GetGroups()
         {
             string CallUrl = ApiUrl + "/api/getGroups";
 
@@ -165,7 +165,7 @@ namespace MessagingLibrary
         }
 
         // Get the members in a group
-        public async static Task<List<string>> GetGroupMembers(String Group)
+        public static async Task<List<string>> GetGroupMembers(String Group)
         {
             string CallUrl = ApiUrl + "/api/getGroupMembers";
             string Parameters = "?Group=" + Group;
@@ -213,7 +213,11 @@ namespace MessagingLibrary
                 responseString = "Error";
             }
 
-            HubLink.SendReloadMessage(MessageGroup);
+            List<string> GroupMembers = await GetGroupMembers(MessageGroup);
+            foreach (var Member in GroupMembers)
+            {
+                HubLink.SendReloadMessage(Member);
+            }
 
             return responseString;
         }
