@@ -31,7 +31,7 @@ namespace MessagingLibrary
         // Send message to all connected signalR clients
         public static async void SendReloadMessage(String User)
         {
-            if (connection == null)
+            if (connection == null || connection.State == HubConnectionState.Disconnected)
             {
                 await Task.Run(() => StartConnection());
             }
