@@ -221,5 +221,88 @@ namespace MessagingLibrary
 
             return responseString;
         }
+
+        // Get all messages between from a user to other user
+        public static async Task<List<MessageUser>> GetUserMessages(String MessageFrom, String MessageTo)
+        {
+            string CallUrl = ApiUrl + "/api/getUserMessages";
+            string Parameters = "?MessageFrom=" + MessageFrom + "&MessageTo" + MessageTo;
+
+            string? responseString;
+            try
+            {
+                HttpClient client = new HttpClient();
+
+                var response = await client.GetAsync(CallUrl + Parameters);
+                responseString = await response.Content.ReadAsStringAsync();
+
+                var model = JsonConvert.DeserializeObject<List<MessageUser>>(responseString);
+
+                if (model == null)
+                {
+                    throw new Exception("Empty list"); // Returns new empty list
+                }
+
+                return model;
+            }
+            catch (Exception e)
+            {
+                return new List<MessageUser>();
+            }
+        }
+
+        // Get all the members that a user has messaged or got messages from
+        public static async Task<List<string>> GetMessagedUsers(String User)
+        {
+            string CallUrl = ApiUrl + "/api/getMessagedUsers";
+            string Parameters = "?User=" + User;
+
+            string? responseString;
+            try
+            {
+                HttpClient client = new HttpClient();
+
+                var response = await client.GetAsync(CallUrl + Parameters);
+                responseString = await response.Content.ReadAsStringAsync();
+
+                var model = JsonConvert.DeserializeObject<List<string>>(responseString);
+
+                if (model == null)
+                {
+                    throw new Exception("Empty list"); // Returns new empty list
+                }
+
+                return model;
+            }
+            catch (Exception e)
+            {
+                return new List<string>();
+            }
+        }
+
+        // Send a message from a user to other user
+        public static async Task<string> SendUserMessage(String SentTime, String Content, String MessageFrom, String MessageTo)
+        {
+            string CallUrl = ApiUrl + "/api/sendUserMessage";
+            string Parameters = "?SentTime=" + SentTime + "&Content=" + Content + "&MessageFrom=" + MessageFrom + "&MessageTo=" + MessageTo;
+
+            string? responseString;
+            try
+            {
+                HttpClient client = new HttpClient();
+
+                var response = await client.PostAsync(CallUrl + Parameters, null);
+                responseString = await response.Content.ReadAsStringAsync();
+            }
+            catch (Exception e)
+            {
+                responseString = "Error";
+            }
+
+            // HubLink.SendReloadMessage(MessageTo);
+
+            return responseString;
+        }
+        
     }
 }
