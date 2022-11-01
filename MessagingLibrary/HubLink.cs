@@ -38,7 +38,11 @@ namespace MessagingLibrary
 
             try
             {
-                await connection.InvokeAsync("ReloadMessage", User);
+                // Method that sends the user who got update to everyone
+                // await connection.InvokeAsync("ReloadMessage", User);
+
+                // Method to only send the update to the user got new message
+                await connection.InvokeAsync("ReloadMessageForUser", User);
             }
             catch (Exception ex)
             {
