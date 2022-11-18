@@ -226,7 +226,7 @@ namespace MessagingLibrary
         public static async Task<List<MessageUser>> GetUserMessages(String MessageFrom, String MessageTo)
         {
             string CallUrl = ApiUrl + "/api/getUserMessages";
-            string Parameters = "?MessageFrom=" + MessageFrom + "&MessageTo" + MessageTo;
+            string Parameters = "?MessageFrom=" + MessageFrom + "&MessageTo=" + MessageTo;
 
             string? responseString;
             try
