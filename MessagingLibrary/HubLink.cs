@@ -49,5 +49,24 @@ namespace MessagingLibrary
             }
         }
 
+
+        // Send user message update to all connected signalR clients
+        public static async void SendReloadUserMessage(String User)
+        {
+            if (connection == null || connection.State == HubConnectionState.Disconnected)
+            {
+                await Task.Run(() => StartConnection());
+            }
+
+            try
+            {
+                // Method to only send the update to the user got new user message
+                await connection.InvokeAsync("ReloadUserMessageForUser", User);
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
     }
 }
