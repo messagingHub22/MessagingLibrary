@@ -299,7 +299,7 @@ namespace MessagingLibrary
                 responseString = "Error";
             }
 
-            HubLink.SendReloadUserMessage(MessageTo);
+            HubLink.SendReloadUserMessage(MessageTo, MessageFrom);
 
             return responseString;
         }
